@@ -453,6 +453,7 @@ configure_package_config_file(
     INSTALL_DESTINATION "${CONFIG_INSTALL_DIR}"
 )
 
+if(NOT gaen_MINEXT)
 install(
     FILES "${PROJECT_CONFIG}" "${VERSION_CONFIG}"
     DESTINATION "${CONFIG_INSTALL_DIR}"
@@ -465,6 +466,7 @@ install(
     DESTINATION "${CONFIG_INSTALL_DIR}"
     COMPONENT ${LIBASSIMP-DEV_COMPONENT}
 )
+endif() # gaen_MINEXT
 
 IF( ASSIMP_BUILD_DOCS )
   ADD_SUBDIRECTORY(doc)
@@ -481,6 +483,7 @@ IF(ASSIMP_HUNTER_ENABLED)
   set(ZLIB_LIBRARIES ZLIB::zlib)
   set(ASSIMP_BUILD_MINIZIP TRUE)
 ELSE()
+  if(NOT gaen_MINEXT)
   # If the zlib is already found outside, add an export in case assimpTargets can't find it.
   IF( ZLIB_FOUND )
     INSTALL( TARGETS zlib zlibstatic
@@ -490,6 +493,7 @@ ELSE()
   IF ( NOT ASSIMP_BUILD_ZLIB )
     FIND_PACKAGE(ZLIB)
   ENDIF()
+  endif() # gaen_MINEXT
 
   IF( NOT ZLIB_FOUND )
     MESSAGE(STATUS "compiling zlib from sources")
@@ -797,6 +801,7 @@ if(WIN32)
     ENDIF()
   ENDIF()
 
+  if(NOT gaen_MINEXT)
   IF(MSVC12 OR MSVC14 OR MSVC15 )
     ADD_CUSTOM_TARGET(UpdateAssimpLibsDebugSymbolsAndDLLs COMMENT "Copying Assimp Libraries ..." VERBATIM)
     IF(CMAKE_GENERATOR MATCHES "^Visual Studio")
@@ -820,4 +825,5 @@ if(WIN32)
       ADD_CUSTOM_COMMAND(TARGET UpdateAssimpLibsDebugSymbolsAndDLLs COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/code/assimp-${ASSIMP_MSVC_VERSION}-mtd.pdb		${LIB_DIR}assimp-${ASSIMP_MSVC_VERSION}-mtd.pdb VERBATIM)
     ENDIF()
   ENDIF()
+  endif() # gaen_MINEXT
 ENDIF ()
